@@ -1,0 +1,106 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 16px;
+  margin-bottom: 16px;
+  max-width: 100%;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+input,
+select {
+  padding: 6px;
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+button {
+  padding: 6px 12px;
+  margin-right: 8px;
+  border: none;
+  background: #2b6cb0;
+  color: #fff;
+  cursor: pointer;
+}
+
+button.secondary {
+  background: #718096;
+}
+
+button.danger {
+  background: #c53030;
+}
+
+button.link {
+  background: none;
+  color: #2b6cb0;
+  padding: 0;
+}
+
+.error {
+  color: #c53030;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.success {
+  color: #2f855a;
+}
+
+label.inline {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+}
+
+table.schedule {
+  width: auto;
+  margin-bottom: 12px;
+}
+
+table.schedule td {
+  border: none;
+  padding: 4px 8px 4px 0;
+}

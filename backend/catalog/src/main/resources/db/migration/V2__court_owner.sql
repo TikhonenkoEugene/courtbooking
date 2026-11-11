@@ -1,0 +1,1 @@
+ALTER TABLE courts ADD COLUMN owner_id BIGINT;

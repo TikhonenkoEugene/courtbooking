@@ -1,0 +1,5 @@
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-kafka'
+    implementation 'org.springframework.security:spring-security-crypto'
+    implementation 'com.nimbusds:nimbus-jose-jwt:10.9.1'
+}

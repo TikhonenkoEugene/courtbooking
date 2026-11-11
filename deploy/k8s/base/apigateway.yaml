@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apigateway
+spec:
+  selector:
+    matchLabels: { app: apigateway }
+  template:
+    metadata:
+      labels: { app: apigateway }
+    spec:
+      enableServiceLinks: false
+      containers:
+        - name: apigateway
+          image: courtbook/apigateway:local
+          imagePullPolicy: IfNotPresent
+          ports:
+            - { name: http, containerPort: 8080 }
+          envFrom:
+            - configMapRef: { name: courtbook-common }
+          env:
+            - name: JWT_SECRET
+              valueFrom: { secretKeyRef: { name: jwt-secret, key: secret } }
+          readinessProbe:
+            httpGet: { path: /actuator/health, port: http }
+            initialDelaySeconds: 15
+            periodSeconds: 5
+          resources:
+            requests: { cpu: 100m, memory: 256Mi }
+            limits: { memory: 512Mi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: apigateway
+spec:
+  selector: { app: apigateway }
+  ports:
+    - { name: http, port: 8080, targetPort: http }

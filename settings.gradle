@@ -1,0 +1,5 @@
+rootProject.name = 'courtbooking'
+
+include 'apigateway', 'identity', 'notification', 'catalog', 'booking', 'payment'
+
+rootProject.children.each { it.projectDir = file("backend/${it.name}") }

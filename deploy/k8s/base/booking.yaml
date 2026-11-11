@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: booking
+spec:
+  selector:
+    matchLabels: { app: booking }
+  template:
+    metadata:
+      labels: { app: booking }
+    spec:
+      enableServiceLinks: false
+      containers:
+        - name: booking
+          image: courtbook/booking:local
+          imagePullPolicy: IfNotPresent
+          ports:
+            - { name: http, containerPort: 8083 }
+          envFrom:
+            - configMapRef: { name: courtbook-common }
+          env:
+            - name: DB_USERNAME
+              valueFrom: { secretKeyRef: { name: pg-booking, key: username } }
+            - name: DB_PASSWORD
+              valueFrom: { secretKeyRef: { name: pg-booking, key: password } }
+          readinessProbe:
+            httpGet: { path: /actuator/health, port: http }
+            initialDelaySeconds: 15
+            periodSeconds: 5
+          resources:
+            requests: { cpu: 100m, memory: 384Mi }
+            limits: { memory: 768Mi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: booking
+spec:
+  selector: { app: booking }
+  ports:
+    - { name: http, port: 8083, targetPort: http }

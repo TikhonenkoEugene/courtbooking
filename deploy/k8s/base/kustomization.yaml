@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: courtbook
+
+resources:
+  - namespace.yaml
+  - config.yaml
+  - postgres.yaml
+  - kafka.yaml
+  - identity.yaml
+  - notification.yaml
+  - catalog.yaml
+  - booking.yaml
+  - payment.yaml
+  - apigateway.yaml
+  - frontends.yaml
+  - ingress.yaml

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: courtbook-common
+data:
+  JAVA_TOOL_OPTIONS: '-XX:MaxRAMPercentage=70'
+  TZ: Asia/Bangkok
+  DB_HOST: courtbook-pg-rw
+  DB_PORT: '5432'
+  KAFKA_BOOTSTRAP_SERVERS: kafka:19092
+  IDENTITY_URL: http://identity:8081
+  CATALOG_URL: http://catalog:8082
+  BOOKING_URL: http://booking:8083
+  PAYMENT_URL: http://payment:8084

@@ -1,0 +1,38 @@
+# Шаблон для удалённого кластера: замените example.com, адрес registry, тег и подсеть. См. deploy/k8s/README.md
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+  - allowlist.yaml
+
+images:
+  - { name: courtbook/identity, newName: registry.example.com/courtbook/identity, newTag: '1.0.0' }
+  - { name: courtbook/catalog, newName: registry.example.com/courtbook/catalog, newTag: '1.0.0' }
+  - { name: courtbook/booking, newName: registry.example.com/courtbook/booking, newTag: '1.0.0' }
+  - { name: courtbook/payment, newName: registry.example.com/courtbook/payment, newTag: '1.0.0' }
+  - { name: courtbook/notification, newName: registry.example.com/courtbook/notification, newTag: '1.0.0' }
+  - { name: courtbook/apigateway, newName: registry.example.com/courtbook/apigateway, newTag: '1.0.0' }
+  - { name: courtbook/web, newName: registry.example.com/courtbook/web, newTag: '1.0.0' }
+  - { name: courtbook/crm, newName: registry.example.com/courtbook/crm, newTag: '1.0.0' }
+
+patches:
+  - target: { kind: Ingress, name: courtbook }
+    patch: |-
+      - { op: replace, path: /spec/rules/0/host, value: courtbook.example.com }
+      - { op: replace, path: /spec/rules/1/host, value: crm.courtbook.example.com }
+      - op: add
+        path: /spec/tls
+        value:
+          - hosts: [courtbook.example.com, crm.courtbook.example.com]
+            secretName: courtbook-tls
+      - op: add
+        path: /metadata/annotations
+        value:
+          # Вход пока мок, поэтому сайт открыт только для своей подсети. Снимать только вместе с настоящей авторизацией
+          traefik.ingress.kubernetes.io/router.middlewares: courtbook-allowlist@kubernetescrd
+          # выпуск сертификата, если в кластере есть cert-manager; иначе создайте Secret courtbook-tls сами
+          cert-manager.io/cluster-issuer: letsencrypt
+  - target: { kind: ConfigMap, name: courtbook-common }
+    patch: |-
+      - { op: replace, path: /data/PAYMENT_ALLOWED_RETURN_HOSTS, value: courtbook.example.com }

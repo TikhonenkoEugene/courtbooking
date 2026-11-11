@@ -1,0 +1,38 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: apigateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: identity
+              uri: ${IDENTITY_URL:http://localhost:8081}
+              predicates:
+                - Path=/apigateway/identity/**
+              filters:
+                - RewritePath=/apigateway/identity/(?<path>.*), /api/$\{path}
+            - id: catalog
+              uri: ${CATALOG_URL:http://localhost:8082}
+              predicates:
+                - Path=/apigateway/catalog/**
+              filters:
+                - RewritePath=/apigateway/catalog/(?<path>.*), /api/$\{path}
+            - id: booking
+              uri: ${BOOKING_URL:http://localhost:8083}
+              predicates:
+                - Path=/apigateway/booking/**
+              filters:
+                - RewritePath=/apigateway/booking/(?<path>.*), /api/$\{path}
+            - id: payment
+              uri: ${PAYMENT_URL:http://localhost:8084}
+              predicates:
+                - Path=/apigateway/payment/**
+              filters:
+                - RewritePath=/apigateway/payment/(?<path>.*), /api/$\{path}
+
+jwt:
+  secret: ${JWT_SECRET:local-secret-key-at-least-32-bytes-long}

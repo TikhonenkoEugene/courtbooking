@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: courtbook
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: courtbook.localhost
+      http:
+        paths:
+          - path: /apigateway
+            pathType: Prefix
+            backend:
+              service: { name: apigateway, port: { name: http } }
+          - path: /
+            pathType: Prefix
+            backend:
+              service: { name: web, port: { name: http } }
+    - host: crm.courtbook.localhost
+      http:
+        paths:
+          - path: /apigateway
+            pathType: Prefix
+            backend:
+              service: { name: apigateway, port: { name: http } }
+          - path: /
+            pathType: Prefix
+            backend:
+              service: { name: crm, port: { name: http } }

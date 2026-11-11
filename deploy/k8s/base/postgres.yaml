@@ -1,0 +1,78 @@
+# PostgreSQL под управлением оператора CloudNativePG: один кластер, у каждого сервиса своя БД и свой пользователь.
+# Пароли — в Secret pg-<сервис> (scripts/create-secrets.sh).
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: courtbook-pg
+spec:
+  instances: 1
+  imageName: ghcr.io/cloudnative-pg/postgresql:17
+  # По умолчанию оператор создаёт базы с локалью C: там LOWER() не меняет регистр кириллицы, и поиск по названию не работает.
+  # Задаётся только при создании кластера.
+  bootstrap:
+    initdb:
+      encoding: UTF8
+      localeCollate: en_US.UTF-8
+      localeCType: en_US.UTF-8
+  postgresql:
+    parameters:
+      max_connections: '200'
+  storage:
+    size: 5Gi
+  managed:
+    roles:
+      - { name: identity, ensure: present, login: true, passwordSecret: { name: pg-identity } }
+      - { name: catalog, ensure: present, login: true, passwordSecret: { name: pg-catalog } }
+      - { name: booking, ensure: present, login: true, passwordSecret: { name: pg-booking } }
+      - { name: payment, ensure: present, login: true, passwordSecret: { name: pg-payment } }
+      - { name: notification, ensure: present, login: true, passwordSecret: { name: pg-notification } }
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: identity
+spec:
+  name: identity
+  owner: identity
+  cluster:
+    name: courtbook-pg
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: catalog
+spec:
+  name: catalog
+  owner: catalog
+  cluster:
+    name: courtbook-pg
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: booking
+spec:
+  name: booking
+  owner: booking
+  cluster:
+    name: courtbook-pg
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: payment
+spec:
+  name: payment
+  owner: payment
+  cluster:
+    name: courtbook-pg
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: notification
+spec:
+  name: notification
+  owner: notification
+  cluster:
+    name: courtbook-pg
